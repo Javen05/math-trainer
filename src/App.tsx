@@ -34,7 +34,7 @@ function App() {
         borderBottom: theme === "dark" ? "1px solid #333" : "1px solid #eee"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <img src="/icon.png" alt="App Icon" style={{ width: 80, height: 80, borderRadius: 24, boxShadow: "0 1px 4px #0002" }} />
+          <img src="./icon.png" alt="App Icon" style={{ width: 80, height: 80, borderRadius: 24, boxShadow: "0 1px 4px #0002" }} />
           <h1 style={{ fontWeight: 700, fontSize: "2rem", letterSpacing: "-1px", color: textColor }}>Math Trainer</h1>
         </div>
         <button
