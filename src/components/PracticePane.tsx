@@ -106,14 +106,32 @@ function makeSquare100Question(span = 15): Question {
   return { id: crypto.randomUUID(), text, answer, hint, mode: "square100" };
 }
 
+// Extend Window interface for flashAnzanOp
+declare global {
+  interface Window {
+    flashAnzanOp?: string;
+  }
+}
+
 function makeFlashAnzanSeries(count = 5, digits = 2): Question {
   const max = Math.pow(10, digits) - 1;
   const min = digits === 1 ? 0 : Math.pow(10, digits - 1);
   const nums = Array.from({ length: count }, () => randInt(min, max));
-  const text = nums.join("  ");
-  const answer = String(nums.reduce((s, n) => s + n, 0));
-  const hint = `Flash Anzan: keep a running sum (chunk by complements to 10 if helpful).`;
-  return { id: crypto.randomUUID(), text, answer, hint, mode: "flashAnzan" };
+  const ops = ["+", "-", "×", "÷"];
+  // Use global or local state for selected operator
+  const op = window.flashAnzanOp || "+";
+  let answer = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    switch (op) {
+      case "+": answer += nums[i]; break;
+      case "-": answer -= nums[i]; break;
+      case "×": answer *= nums[i]; break;
+      case "÷": answer /= nums[i]; break;
+    }
+  }
+  const text = nums.join(` ${op} `);
+  const hint = `Flash Anzan: use operator ${op}.`;
+  return { id: crypto.randomUUID(), text, answer: String(answer), hint, mode: "flashAnzan" };
 }
 
 const loadAttempts = (): Attempt[] => {
@@ -140,6 +158,7 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
   const [allowNeg, setAllowNeg] = useState(false);
   const [anzanCount, setAnzanCount] = useState(5);
   const [anzanSpeed, setAnzanSpeed] = useState(700);
+  const [anzanOp, setAnzanOp] = useState<string>("+");
   const [question, setQuestion] = useState<Question | null>(null);
   const [userAns, setUserAns] = useState("");
   const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
@@ -184,10 +203,11 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
     startedAt.current = performance.now();
   };
 
+  // Only regenerate question when mode, count, or digits change
   useEffect(() => {
     genQuestion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
+  }, [mode, anzanCount, digits]);
 
   useEffect(() => saveAttempts(attempts), [attempts]);
 
@@ -215,23 +235,22 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
       setShownAnzan("");
       return;
     }
-    const nums = question.text.split(/\s+/).filter(x => x.length > 0);
+    const nums = question.text.split(/\s*[+\-×÷]\s*/).filter(x => x.length > 0);
     let idx = 0;
     setShownAnzan("");
     let lastPrinted = "";
     const timer = setInterval(() => {
       if (idx < nums.length) {
-        lastPrinted = lastPrinted ? lastPrinted + "  " + nums[idx] : nums[idx];
+        lastPrinted = lastPrinted ? lastPrinted + ` ${anzanOp} ` + nums[idx] : nums[idx];
         setShownAnzan(lastPrinted);
         idx++;
       } else {
         clearInterval(timer);
-        // After interval, ensure last digit is printed
-        setShownAnzan(nums.join("  "));
+        setShownAnzan(nums.join(` ${anzanOp} `));
       }
     }, anzanSpeed);
     return () => clearInterval(timer);
-  }, [question?.id, mode, anzanSpeed]);
+  }, [question?.id, mode, anzanSpeed, anzanOp]);
 
   const accuracy = useMemo(() => {
     const rows = attempts.slice(-100);
@@ -334,6 +353,14 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
               </label>
               <label style={{ marginLeft: '2em' }}>Speed (ms):
                 <input type="number" min={250} max={1500} step={50} value={anzanSpeed} onChange={e => setAnzanSpeed(Number(e.target.value))} style={{ width: '4em', marginLeft: '0.5em' }} />
+              </label>
+              <label style={{ marginLeft: '2em' }}>Operator:
+                <select value={anzanOp} onChange={e => { setAnzanOp(e.target.value); window.flashAnzanOp = e.target.value; }} style={{ marginLeft: '0.5em' }}>
+                  <option value="+">+</option>
+                  <option value="-">-</option>
+                  <option value="×">×</option>
+                  <option value="÷">÷</option>
+                </select>
               </label>
             </div>
           )}
