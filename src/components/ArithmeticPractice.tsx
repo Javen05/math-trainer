@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function makeArithmeticQuestion(digits = 2, ops = ["+", "-", "×", "÷" as const], allowNeg = false) {
+export function makeArithmeticQuestion(digits = 2, allowNeg = false) {
   const op = ["+", "-", "×", "÷"].sort(() => Math.random() - 0.5)[0];
   const max = Math.pow(10, digits) - 1;
   const min = digits === 1 ? 0 : Math.pow(10, digits - 1);

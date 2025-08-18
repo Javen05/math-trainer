@@ -80,7 +80,6 @@ function makeNearHundredQuestion(span = 10): Question {
   const left = base - ((base - a) + (base - b));
   const right = (base - a) * (base - b);
   const rightStr = String(right).padStart(2, "0");
-  const answer = `${left}${rightStr}`;
   const text = `${a} × ${b}`;
   const hint = `Nikhilam: diffs are ${base - a} and ${base - b}. Left = ${a}-${base - b}=${left}. Right = ${base - a}×${base - b}=${right} → ${left}${rightStr}.`;
   return { id: crypto.randomUUID(), text, answer: String(a * b), hint, mode: "nearHundred" };
@@ -117,7 +116,6 @@ function makeFlashAnzanSeries(count = 5, digits = 2): Question {
   const max = Math.pow(10, digits) - 1;
   const min = digits === 1 ? 0 : Math.pow(10, digits - 1);
   const nums = Array.from({ length: count }, () => randInt(min, max));
-  const ops = ["+", "-", "×", "÷"];
   // Use global or local state for selected operator
   const op = window.flashAnzanOp || "+";
   let answer = nums[0];
@@ -164,7 +162,6 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
   const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
   const [hintOpen, setHintOpen] = useState(false);
   const [attempts, setAttempts] = useState<Attempt[]>(loadAttempts());
-  const [running, setRunning] = useState(false);
   const startedAt = useRef<number | null>(null);
 
   const genQuestion = () => {
@@ -199,7 +196,6 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
     setUserAns("");
     setFeedback("idle");
     setHintOpen(false);
-    setRunning(true);
     startedAt.current = performance.now();
   };
 
@@ -216,7 +212,6 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
     const ms = performance.now() - startedAt.current;
     const correct = userAns.trim() === question.answer;
     setFeedback(correct ? "correct" : "wrong");
-    setRunning(false);
     setAttempts((rows) => [
       ...rows,
       { id: crypto.randomUUID(), q: question.text, correct, ms, mode: question.mode, timestamp: Date.now() }
