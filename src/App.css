@@ -1,0 +1,43 @@
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.card {
+  padding: 0.5rem;
+}
+
+.stats-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  border-radius: 1em;
+  background: #eee;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  color: #444;
+}
+
+.stats-label, .stats-value {
+  color: #444;
+}
+
+.session-stats-label {
+  color: #666;
+}
+
+.session-table th, .session-table td {
+  color: #444;
+}
+
+.flashcard {
+  background: rgba(40,40,50,0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px #0002;
+  border-radius: 1em;
+  border: 1px solid #333;
+}
