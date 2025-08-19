@@ -300,7 +300,8 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
             minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            minHeight: '340px',
           }}
         >
           <div style={{ fontWeight: 600, fontSize: '1.2em', display: 'flex', alignItems: 'center', gap: '0.5em' }}>Practice</div>
@@ -309,9 +310,9 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
               margin: '1em 0',
               display: 'flex',
               flexWrap: 'wrap',
-              gap: '1em',
+              gap: '0.5em',
               alignItems: 'center',
-              justifyContent: 'flex-start',
+              justifyContent: 'flex-start'
             }}
           >
             <label>Mode
@@ -408,7 +409,7 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
               </div>
             )}
             {hintOpen && question?.hint && (
-              <div style={{ marginTop: '1em', background: '#eee', borderRadius: '0.7em', padding: '0.7em', fontSize: '1em' }}>{question.hint}</div>
+              <div style={{ marginTop: '1em', background: '#646464ff', borderRadius: '0.7em', padding: '0.7em', fontSize: '1em' }}>{question.hint}</div>
             )}
           </div>
         </div>
@@ -439,13 +440,14 @@ const PracticePane: React.FC<PracticePaneProps> = ({ mode, setMode }) => {
             flexDirection: 'column',
             justifyContent: 'center',
             width: '100%',
+            minHeight: '340px',
           }}
         >
             <div style={{ fontWeight: 600, fontSize: '1.2em', display: 'flex', alignItems: 'center', gap: '0.5em' }}>Session Statistics</div>
             <div style={{ maxHeight: '300px', margin: '1em 0', overflow: 'auto' }}>
               <table style={{ width: '100%', fontSize: '0.95em' }}>
                 <thead>
-                  <tr style={{ background: '#b8b8b8ff', textAlign: 'center' }}>
+                  <tr style={{ background: '#646464ff', textAlign: 'center' }}>
                     <th style={{ padding: '0.5em' }}>Question</th>
                     <th style={{ padding: '0.5em' }}>Mode</th>
                     <th style={{ padding: '0.5em' }}>ms</th>
